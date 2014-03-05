@@ -6,20 +6,23 @@
   </head>
   <body>
     <script>
-
-      $(document).ready(function(){
+    
+      var displayTweets = function() {
         var $body = $('body');
         $body.html('');
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
+        for (var index = streams.home.length - 1; index >= 0; index--){
           var tweet = streams.home[index];
           var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
+          var timestamp = streams.home[index].created_at;
+          $tweet.text(timestamp + ': @' + tweet.user + ': ' + tweet.message);
           $tweet.appendTo($body);
-          index -= 1;
         }
+      }
 
+      $(document).ready(function(){
+        displayTweets;
+        setInterval(displayTweets, 500);
       });
 
     </script>
