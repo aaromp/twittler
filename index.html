@@ -72,7 +72,9 @@
           // create html
           var $tweet = $('<div class="list-group-item"></div>');
           var $tweetHeading = $('<h4 class="list-group-item-heading"></h4>');
-          $tweetHeading.text('@' + tweet.user + ' ' + timestamp + '');
+          $tweetHeading.html('<a href="#">@' + tweet.user + '</a>')
+                       .append('<h5 style="display:inline" class="text-muted"> ' + timestamp + '</h5>');
+          
           var $tweetMessage = $('<p class="list-group-item-text"></p>');
           $tweetMessage.text(tweet.message);
           $tweet.append($tweetHeading).append($tweetMessage);
