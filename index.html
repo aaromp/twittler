@@ -74,7 +74,7 @@
           // create html
           var $tweet = $('<div class="list-group-item"></div>');
           var $tweetHeading = $('<h4 class="list-group-item-heading"></h4>');
-          $tweetHeading.html('<a href="#">@' + tweet.user + '</a>')
+          $tweetHeading.html('<a href="#" id="' + tweet.user + '">@' + tweet.user + '</a>')
                        .append('<h5 style="display:inline" class="text-muted"> ' + timestamp + '</h5>');
           
           var $tweetMessage = $('<p class="list-group-item-text"></p>');
@@ -84,12 +84,19 @@
         }
       }
 
+      var username = undefined;
+
       $(document).ready(function() {
-        var user = undefined;
         setInterval(function() {
-          displayTweets(user);
-          }, 4000);
+          displayTweets(username);
+          }, 500);
+          
+        $(document).on('click', 'a', function() {
+          username = $(this).attr('id');
+        });
       });
+      
+      
 
     </script>
   </body>
