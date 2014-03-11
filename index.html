@@ -60,13 +60,15 @@
     <script src="data_generator.js"></script>
     <script>
     
-      var displayTweets = function() {
+      var displayTweets = function(username) {
         var $tweets = $('.list-group');
         $tweets.html('');
+        
+        var user = username === undefined ? streams.home : streams.users[username];
 
-        for (var index = streams.home.length - 1; index >= 0; index--){
+        for (var index = user.length - 1; index >= 0; index--){
           //retrieve tweet and timestamp
-          var tweet = streams.home[index];
+          var tweet = user[index];
           var timestamp = streams.home[index].created_at;
           
           // create html
@@ -82,8 +84,11 @@
         }
       }
 
-      $(document).ready(function(){
-        setInterval(displayTweets, 500);
+      $(document).ready(function() {
+        var user = undefined;
+        setInterval(function() {
+          displayTweets(user);
+          }, 4000);
       });
 
     </script>
