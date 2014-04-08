@@ -41,7 +41,7 @@ App.Views.Tweet = Backbone.View.extend({
 
 App.Views.Tweets = Backbone.View.extend({
   initialize: function() {
-    this.collection.on('reset', this.addTweets, this);
+    this.collection.on('reset', this.render, this);
   },
 
   addTweet: function(tweet) {
@@ -57,6 +57,16 @@ App.Views.Tweets = Backbone.View.extend({
   
   render: function() {
     this.addTweets();
+  },
+  
+  events: {
+    'click a': 'refresh'
+  },
+  
+  refresh: function() { 
+    var tweetCollection = username === undefined ? streams.home : streams.users[username];
+    this.collection.reset(tweetCollection);
+    this.render();
   }
 });
 

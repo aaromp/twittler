@@ -76,6 +76,8 @@
     <script>
       
       var username;
+      var visitor = prompt("Choose a username");
+      streams.users[visitor] = [];
 
       $(document).ready(function() {
         var $tweets = $('.list-group');
@@ -84,15 +86,17 @@
         var tweetsView = new App.Views.Tweets({ collection: tweets });
 
         var tempScrollTop, tweetCollection;
-
-        var scheduleNextTweet = function(){
-          tempScrollTop = $(window).scrollTop();
-          generateRandomTweet();
-          tweetCollection = username === undefined ? streams.home : streams.users[username];
-          tweets.reset(tweetCollection);
-          tweetsView.render();
+        
+        var refreshTweets = function() {
+          tempScrollTop = $(window).scrollTop();   
+          tweetsView.refresh();
           $tweets.prepend(tweetsView.el);
           $(window).scrollTop(tempScrollTop);
+        };
+
+        var scheduleNextTweet = function(){
+          generateRandomTweet();
+          refreshTweets();
           setTimeout(scheduleNextTweet, Math.random() * 20000);
         };
         
@@ -100,6 +104,12 @@
         
         $(document).on('click', '.navbar-brand', function() {
           username = undefined;
+          refreshTweets();
+        });
+        
+        $(".btn").click(function(){
+          writeTweet($(".form-control").val());
+          refreshTweets();
         });
       });
 
