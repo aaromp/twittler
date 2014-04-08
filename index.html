@@ -47,56 +47,66 @@
         </div><!--/.nav-collapse -->
       </div><!-- /container -->
     <div class="container theme-showcase" role="main">
-      <div class="list-group"></div>
+      <div class="col-sm-3 sidebar">
+        <div class="sidebar-module sidebar-module-inset" role="form">
+          <h4>Compose a tweet</h4>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Peep peep!">
+            <span class="input-group-btn">
+              <button class="btn btn-success" type="button"><span class="glyphicon glyphicon-send"></span></button>
+            </span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="140" style="width: 10%;">
+              <span class="sr-only">10% Complete</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-9 tweets">
+        <div class="list-group"></div>
+      </div>
     </div>
     <!-- Bootstrap core JavaScript
         ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    
-    
-
-    <script src="data_generator.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/underscore.js"></script>
+    <script src="js/backbone.js"></script>
+    <script src="js/data_generator.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/moment-with-langs.js"></script>
+    <script src="js/moment-twitter.js"></script>
     <script>
-    
-      var displayTweets = function(username) {
-        var $tweets = $('.list-group');
-        $tweets.html('');
-        
-        var user = username === undefined ? streams.home : streams.users[username];
-
-        for (var index = user.length - 1; index >= 0; index--){
-          //retrieve tweet and timestamp
-          var tweet = user[index];
-          var timestamp = streams.home[index].created_at;
-          
-          // create html
-          var $tweet = $('<div class="list-group-item"></div>');
-          var $tweetHeading = $('<h4 class="list-group-item-heading"></h4>');
-          $tweetHeading.html('<a href="#" id="' + tweet.user + '">@' + tweet.user + '</a>')
-                       .append('<h5 style="display:inline" class="text-muted"> ' + timestamp + '</h5>');
-          
-          var $tweetMessage = $('<p class="list-group-item-text"></p>');
-          $tweetMessage.text(tweet.message);
-          $tweet.append($tweetHeading).append($tweetMessage);
-          $tweet.appendTo($tweets);
-        }
-      }
-
-      var username = undefined;
+      
+      var username;
 
       $(document).ready(function() {
-        setInterval(function() {
-          displayTweets(username);
-          }, 500);
-          
-        $(document).on('click', 'a', function() {
-          username = $(this).attr('id');
+        var $tweets = $('.list-group');
+        
+        var tweets = new App.Collections.Tweets();
+        var tweetsView = new App.Views.Tweets({ collection: tweets });
+
+        var tempScrollTop, tweetCollection;
+
+        var scheduleNextTweet = function(){
+          tempScrollTop = $(window).scrollTop();
+          generateRandomTweet();
+          tweetCollection = username === undefined ? streams.home : streams.users[username];
+          tweets.reset(tweetCollection);
+          tweetsView.render();
+          $tweets.prepend(tweetsView.el);
+          $(window).scrollTop(tempScrollTop);
+          setTimeout(scheduleNextTweet, Math.random() * 20000);
+        };
+        
+        scheduleNextTweet();
+        
+        $(document).on('click', '.navbar-brand', function() {
+          username = undefined;
         });
       });
-      
-      
 
     </script>
   </body>
